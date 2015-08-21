@@ -72,7 +72,8 @@ router.get('/google', function(req, res, next) {
                         stats = fs.lstatSync(__dirname + '/../google/' + system + '/original/' + game + '.jpg');
 
                         if (stats.isFile()) {
-                            return nextgame(null);
+                            nextgame(null);
+                            return;
                         }
                     } catch (e) {
                         //continue when file not found
