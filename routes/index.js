@@ -69,7 +69,7 @@ router.get('/google', function(req, res, next) {
                 	++ctr;
 
                     try {
-                        stats = fs.lstatSync(__dirname + '/../google/' + system + '/' + game + '.jpg');
+                        stats = fs.lstatSync(__dirname + '/../google/' + system + '/original/' + game + '.jpg');
 
                         if (stats.isFile()) {
                             return nextgame(null);
