@@ -3,6 +3,7 @@ var request = require('request');
 var cheerio = require('cheerio');
 var fs = require('fs');
 var async = require('async');
+var gm = require('gm');
 var router = express.Router();
 
 router.get('/google', function(req, res, next) {
@@ -29,6 +30,13 @@ router.get('/google', function(req, res, next) {
             }
 
             console.log('google: starting ' + system);
+
+            var newdir = __dirname + '/../google/' + system;
+            try {
+            	fs.mkdirSync(newdir);
+            } catch (e) {
+
+            }
 
             //read the genreated search.json file
             fs.readFile(__dirname + '/../data/' + system + '/search.json', 'utf8', function(err, content) {
@@ -67,7 +75,7 @@ router.get('/google', function(req, res, next) {
                 	var term = encodeURIComponent(systemnames[system] + ' ' + game + ' box');
 				    var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&start=0&q=' + term;
 
-				    console.log('goog ' + ctr + ': ' + game + ' --> ' + url);
+				    console.log('goog ' + system + ' ' + ctr + ': ' + game + ' --> ' + url);
 
 				    request({
 				    	method: 'get',
@@ -76,6 +84,9 @@ router.get('/google', function(req, res, next) {
 				    	if (err) {
 				    		return nextgame(response);
 				    	}
+				    	
+				    	console.log('search retunred');
+
 				    	body = JSON.parse(body);
 				    	
 				    	if (body.responseData && body.responseData.results && body.responseData.results[0] && body.responseData.results[0].unescapedUrl) {
@@ -85,9 +96,21 @@ router.get('/google', function(req, res, next) {
 				    		return nextgame(response); //likely an error
 				    	}
 
+				    	console.log('waiting to prevent spamming google.... if you want to stop the application, do so now.');
 						setTimeout(function() {
-							download(imageurl, __dirname + '/../google/' + system + '/' + game + '.jpg', function(){
-								nextgame(null);
+							
+							console.log('downloading');
+							download(imageurl, __dirname + '/../google/' + system + '/' + game + '.jpg', function(filename){
+								
+								console.log('resizing');
+								gm(filename).resize(200).write(filename, function (err) {
+									if (err) {
+										console.log('resizing error: ' + err)
+									}
+
+									console.log('done!');
+									nextgame(null);
+								});
 							});
 						}, 10000);
 				    });
@@ -135,6 +158,13 @@ router.get('/bing', function(req, res, next) {
             }
 
             console.log('bing: starting ' + system);
+
+            var newdir = __dirname + '/../bing/' + system;
+            try {
+            	fs.mkdirSync(newdir);
+            } catch (e) {
+            	
+            }
 
             //read the genreated search.json file
             fs.readFile(__dirname + '/../data/' + system + '/search.json', 'utf8', function(err, content) {
@@ -226,7 +256,9 @@ var download = function(uri, filename, callback){
             console.log(err);
             callback();
         })
-		.pipe(fs.createWriteStream(filename)).on('close', callback);
+		.pipe(fs.createWriteStream(filename)).on('close', function() {
+			callback(filename);
+		});
 	});
 };
 

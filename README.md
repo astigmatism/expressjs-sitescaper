@@ -1,0 +1,1 @@
+install first: brew install graphicsmagick
