@@ -43,7 +43,7 @@ router.get('/google', function(req, res, next) {
                     fs.mkdirSync(newdir + '/' + widths[i]);    
                 }
             } catch (e) {
-                return res.json(e);
+                //continue
             }
 
             //read the genreated search.json file
