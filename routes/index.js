@@ -8,6 +8,8 @@ var router = express.Router();
 
 router.get('/google', function(req, res, next) {
   	
+    var delay = req.query.delay || 10000;
+
 	var systemnames = {
 		nes: 'nes',
 		snes: 'snes',
@@ -125,7 +127,7 @@ router.get('/google', function(req, res, next) {
                                 nextgame(null);
 								
 							});
-						}, 10000);
+						}, delay);
 				    });
 
 
