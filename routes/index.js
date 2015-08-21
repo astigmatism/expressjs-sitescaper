@@ -15,6 +15,9 @@ router.get('/google', function(req, res, next) {
 		gb: 'gameboy'
 	}
 
+    var i;
+    var widths = [300, 250, 200, 150, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10];
+
 	//open the data dir
     fs.readdir(__dirname + '/../data', function(err, systems) {
         if (err) {
@@ -31,11 +34,16 @@ router.get('/google', function(req, res, next) {
 
             console.log('google: starting ' + system);
 
-            var newdir = __dirname + '/../google/' + system;
+            
             try {
-            	fs.mkdirSync(newdir);
+            	var newdir = __dirname + '/../google/' + system;
+                fs.mkdirSync(newdir);
+                fs.mkdirSync(newdir + '/original');
+                for (i = 0; i < widths.length; ++i) {
+                    fs.mkdirSync(newdir + '/' + widths[i]);    
+                }
             } catch (e) {
-
+                return res.json(e);
             }
 
             //read the genreated search.json file
@@ -100,17 +108,22 @@ router.get('/google', function(req, res, next) {
 						setTimeout(function() {
 							
 							console.log('downloading');
-							download(imageurl, __dirname + '/../google/' + system + '/' + game + '.jpg', function(filename){
+							download(imageurl, __dirname + '/../google/' + system + '/original/' + game + '.jpg', function(filename){
 								
-								console.log('resizing');
-								gm(filename).resize(200).write(filename, function (err) {
-									if (err) {
-										console.log('resizing error: ' + err)
-									}
+								console.log('resizing asynconously..');
 
-									console.log('done!');
-									nextgame(null);
-								});
+                                for (i = 0; i < widths.length; ++i) {
+
+                                    gm(filename).resize(widths[i]).write(__dirname + '/../google/' + system + '/' + widths[i] + '/' + game + '.jpg', function (err) {
+                                        if (err) {
+                                            console.log('resizing error: ' + err)
+                                        }
+                                    });
+                                }
+
+                                console.log('done!');
+                                nextgame(null);
+								
 							});
 						}, 10000);
 				    });
