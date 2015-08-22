@@ -72,7 +72,7 @@ router.get('/google', function(req, res, next) {
 
                     fs.stat(__dirname + '/../google/' + system + '/original/' + game + '.jpg', function(err, stats) {
                         if (err) {
-                            return nextgame(err);
+                            //don't handle errors from this. it errors on not finding the file, which is how we continue
                         }
 
                         if (stats.isFile()) {
