@@ -71,36 +71,38 @@ router.get('/google', function(req, res, next) {
                                 return nextgame(null);
                             }
 
-                            //build url
-                            var term = encodeURIComponent(systemnames[system] + ' ' + game + ' box');
-                            var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&start=0&q=' + term;
+                            console.log('waiting to prevent spamming google.... if you want to stop the application, do so now.');
+                            setTimeout(function() {
 
-                            console.log('goog ' + system + ' ' + ctr + ': ' + game + ' --> ' + url);
+                                //build url
+                                var term = encodeURIComponent(systemnames[system] + ' ' + game + ' box');
+                                var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&start=0&q=' + term;
 
-                            request({
-                                method: 'get',
-                                url: url
-                            }, function(err, response, body) {
-                                if (err) {
-                                    return nextgame(response);
-                                }
-                                
-                                console.log('search retunred');
+                                console.log('goog ' + system + ' ' + ctr + ': ' + game + ' --> ' + url);
 
-                                body = JSON.parse(body);
-                                
-                                if (body.responseData && body.responseData.results && body.responseData.results[0] && body.responseData.results[0].unescapedUrl) {
-
-                                    var imageurl = body.responseData.results[0].unescapedUrl; //the response must contain a url to the image
-
-                                } else {
+                                request({
+                                    method: 'get',
+                                    url: url
+                                }, function(err, response, body) {
+                                    if (err) {
+                                        return nextgame(response);
+                                    }
                                     
-                                    console.log('likely error in response: ' + body);
-                                    return nextgame(); //skip this game, a restart will find the folder missing and try again
-                                }
+                                    console.log('search retunred');
 
-                                console.log('waiting to prevent spamming google.... if you want to stop the application, do so now.');
-                                setTimeout(function() {
+                                    body = JSON.parse(body);
+                                    
+                                    if (body.responseData && body.responseData.results && body.responseData.results[0] && body.responseData.results[0].unescapedUrl) {
+
+                                        var imageurl = body.responseData.results[0].unescapedUrl; //the response must contain a url to the image
+
+                                    } else {
+                                        
+                                        console.log('likely error in response: ' + JSON.stringify(body));
+                                        setTimeout(function() {
+                                            return nextgame(); //skip this game, a restart will find the folder missing and try again
+                                        }, delay);
+                                    }
                                     
                                     console.log('create game folder');
                                     fs.mkdirSync(__dirname + '/../google/' + system + '/' + game);
