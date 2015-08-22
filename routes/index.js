@@ -123,8 +123,9 @@ router.get('/google', function(req, res, next) {
                                         nextgame();
                                         
                                     });
-                                }, delay);
-                            });
+                                });
+
+                            }, delay);
 
                         });
 
