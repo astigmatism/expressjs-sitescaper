@@ -18,7 +18,7 @@ router.get('/google', function(req, res, next) {
 	}
 
     var i;
-    var widths = [300, 250, 200, 150, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10];
+    var resizes = [400, 300, 250, 200, 150, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 5];
 
 	//open the data dir
     fs.readdir(__dirname + '/../data', function(err, systems) {
@@ -36,106 +36,105 @@ router.get('/google', function(req, res, next) {
 
             console.log('google: starting ' + system);
 
-            
-            try {
-            	var newdir = __dirname + '/../google/' + system;
-                fs.mkdirSync(newdir);
-                fs.mkdirSync(newdir + '/original');
-                for (i = 0; i < widths.length; ++i) {
-                    fs.mkdirSync(newdir + '/' + widths[i]);    
-                }
-            } catch (e) {
-                //continue
-            }
+            var systemfolder = __dirname + '/../google/' + system;
 
-            //read the genreated search.json file
-            fs.readFile(__dirname + '/../data/' + system + '/search.json', 'utf8', function(err, content) {
-
-                try {
-                    content = JSON.parse(content);
-                } catch (e) {
-                    return nextsystem(e);
+            fs.exists(systemfolder, function (exists) {
+                if (!exists) {
+                    fs.mkdirSync(systemfolder);
                 }
 
-                var games = [];
-                for (game in content) {
-                	if (content[game].r >= 88) {
-                		games.push(game);
-                	}
-                }
-                var ctr = 0;
+                //read the genreated search.json file
+                fs.readFile(__dirname + '/../data/' + system + '/search.json', 'utf8', function(err, content) {
 
-                //loop over games
-                async.eachSeries(games, function(game, nextgame) {
+                    try {
+                        content = JSON.parse(content);
+                    } catch (e) {
+                        return nextsystem(e);
+                    }
 
-                	++ctr;
-                    var filetocheck = __dirname + '/../google/' + system + '/original/' + game + '.jpg';
+                    var games = [];
+                    for (game in content) {
+                    	if (content[game].r >= 88) {
+                    		games.push(game);
+                    	}
+                    }
+                    var ctr = 0;
 
-                    fs.exists(__dirname + '/../google/' + system + '/original/' + game + '.jpg', function (exists) {
-                        if (exists) {
-                            return nextgame(null);
-                        }
+                    //loop over games
+                    async.eachSeries(games, function(game, nextgame) {
 
-                        //build url
-                        var term = encodeURIComponent(systemnames[system] + ' ' + game + ' box');
-                        var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&start=0&q=' + term;
+                    	++ctr;
+                        var foldertocheck = __dirname + '/../google/' + system + '/' + game;
 
-                        console.log('goog ' + system + ' ' + ctr + ': ' + game + ' --> ' + url);
-
-                        request({
-                            method: 'get',
-                            url: url
-                        }, function(err, response, body) {
-                            if (err) {
-                                return nextgame(response);
-                            }
-                            
-                            console.log('search retunred');
-
-                            body = JSON.parse(body);
-                            
-                            if (body.responseData && body.responseData.results && body.responseData.results[0] && body.responseData.results[0].unescapedUrl) {
-
-                                var imageurl = body.responseData.results[0].unescapedUrl;
-                            } else {
-                                
-                                console.log('likely error in response: ' + body);
-                                return nextgame(console.log(JSON.stringify(response, null, 4))); //an error. maybe google suspected foul play
+                        fs.exists(foldertocheck, function (exists) {
+                            if (exists) {
+                                return nextgame(null);
                             }
 
-                            console.log('waiting to prevent spamming google.... if you want to stop the application, do so now.');
-                            setTimeout(function() {
+                            //build url
+                            var term = encodeURIComponent(systemnames[system] + ' ' + game + ' box');
+                            var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&start=0&q=' + term;
+
+                            console.log('goog ' + system + ' ' + ctr + ': ' + game + ' --> ' + url);
+
+                            request({
+                                method: 'get',
+                                url: url
+                            }, function(err, response, body) {
+                                if (err) {
+                                    return nextgame(response);
+                                }
                                 
-                                console.log('downloading');
-                                download(imageurl, __dirname + '/../google/' + system + '/original/' + game + '.jpg', function(filename){
+                                console.log('search retunred');
+
+                                body = JSON.parse(body);
+                                
+                                if (body.responseData && body.responseData.results && body.responseData.results[0] && body.responseData.results[0].unescapedUrl) {
+
+                                    var imageurl = body.responseData.results[0].unescapedUrl;
+                                } else {
                                     
-                                    console.log('resizing asynconously..');
+                                    console.log('likely error in response: ' + body);
+                                    return nextgame(console.log(JSON.stringify(response, null, 4))); //an error. maybe google suspected foul play
+                                }
 
-                                    for (i = 0; i < widths.length; ++i) {
-
-                                        gm(filename).resize(widths[i]).write(__dirname + '/../google/' + system + '/' + widths[i] + '/' + game + '.jpg', function (err) {
-                                            if (err) {
-                                                console.log('resizing error: ' + err)
-                                            }
-                                        });
-                                    }
-
-                                    console.log('done!');
-                                    nextgame(null);
+                                console.log('waiting to prevent spamming google.... if you want to stop the application, do so now.');
+                                setTimeout(function() {
                                     
-                                });
-                            }, delay);
+                                    console.log('create game folder');
+                                    fs.mkdirSync(__dirname + '/../google/' + system + '/' + game);
+
+                                    console.log('downloading');
+                                    download(imageurl, __dirname + '/../google/' + system + '/' + game + '/original.jpg', function(filename){
+                                        
+                                        console.log('resizing asynconously..');
+
+                                        for (i = 0; i < resizes.length; ++i) {
+
+                                            gm(filename).resize(resizes[i]).write(__dirname + '/../google/' + system + '/' + game + '/' + resizes[i] + '.jpg', function (err) {
+                                                if (err) {
+                                                    console.log('resizing error: ' + err)
+                                                }
+                                            });
+                                        }
+
+                                        console.log('done!');
+                                        nextgame(null);
+                                        
+                                    });
+                                }, delay);
+                            });
+
                         });
 
-                    });
-
-                }, function(err) {
-				    if (err) {
-				        return nextsystem(err);
-				    }
-				    console.log('next system');
-				    nextsystem(null);
-				});
+                    }, function(err) {
+    				    if (err) {
+    				        return nextsystem(err);
+    				    }
+    				    console.log('next system');
+    				    nextsystem(null);
+    				});
+                });
             });
 
         }, function(err) {
