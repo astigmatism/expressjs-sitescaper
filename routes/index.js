@@ -91,11 +91,12 @@ router.get('/google', function(req, res, next) {
                                 
                                 if (body.responseData && body.responseData.results && body.responseData.results[0] && body.responseData.results[0].unescapedUrl) {
 
-                                    var imageurl = body.responseData.results[0].unescapedUrl;
+                                    var imageurl = body.responseData.results[0].unescapedUrl; //the response must contain a url to the image
+
                                 } else {
                                     
                                     console.log('likely error in response: ' + body);
-                                    return nextgame(console.log(JSON.stringify(response, null, 4))); //an error. maybe google suspected foul play
+                                    return nextgame(); //skip this game, a restart will find the folder missing and try again
                                 }
 
                                 console.log('waiting to prevent spamming google.... if you want to stop the application, do so now.');
@@ -119,7 +120,7 @@ router.get('/google', function(req, res, next) {
                                         }
 
                                         console.log('done!');
-                                        nextgame(null);
+                                        nextgame();
                                         
                                     });
                                 }, delay);
