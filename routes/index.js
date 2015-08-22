@@ -69,13 +69,10 @@ router.get('/google', function(req, res, next) {
                 async.eachSeries(games, function(game, nextgame) {
 
                 	++ctr;
+                    var filetocheck = __dirname + '/../google/' + system + '/original/' + game + '.jpg';
 
-                    fs.stat(__dirname + '/../google/' + system + '/original/' + game + '.jpg', function(err, stats) {
-                        if (err) {
-                            //don't handle errors from this. it errors on not finding the file, which is how we continue
-                        }
-
-                        if (stats.isFile()) {
+                    fs.exists(__dirname + '/../google/' + system + '/original/' + game + '.jpg', function (exists) {
+                        if (exists) {
                             return nextgame(null);
                         }
 
