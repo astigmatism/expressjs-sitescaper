@@ -103,7 +103,9 @@ router.get('/google', function(req, res, next) {
 
 				    		var imageurl = body.responseData.results[0].unescapedUrl;
 				    	} else {
-				    		return nextgame(response); //likely an error
+				    		
+                            console.log('likely error in response: ' + body);
+                            return nextgame(response); //likely an error
 				    	}
 
 				    	console.log('waiting to prevent spamming google.... if you want to stop the application, do so now.');
