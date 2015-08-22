@@ -99,9 +99,7 @@ router.get('/google', function(req, res, next) {
                                     } else {
                                         
                                         console.log('likely error in response: ' + JSON.stringify(body));
-                                        setTimeout(function() {
-                                            return nextgame(); //skip this game, a restart will find the folder missing and try again
-                                        }, delay);
+                                        return nextgame(); //skip this game, a restart will find the folder missing and try again
                                     }
                                     
                                     console.log('create game folder');
