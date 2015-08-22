@@ -70,68 +70,67 @@ router.get('/google', function(req, res, next) {
 
                 	++ctr;
 
-                    try {
-                        stats = fs.lstatSync(__dirname + '/../google/' + system + '/original/' + game + '.jpg');
+                    fs.stat(__dirname + '/../google/' + system + '/original/' + game + '.jpg', function(err, stats) {
+                        if (err) {
+                            return nextgame(err);
+                        }
 
                         if (stats.isFile()) {
                             return nextgame(null);
                         }
-                    } catch (e) {
-                        //continue when file not found
-                    }
 
+                        //build url
+                        var term = encodeURIComponent(systemnames[system] + ' ' + game + ' box');
+                        var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&start=0&q=' + term;
 
-                	//build url
-                	var term = encodeURIComponent(systemnames[system] + ' ' + game + ' box');
-				    var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&start=0&q=' + term;
+                        console.log('goog ' + system + ' ' + ctr + ': ' + game + ' --> ' + url);
 
-				    console.log('goog ' + system + ' ' + ctr + ': ' + game + ' --> ' + url);
+                        request({
+                            method: 'get',
+                            url: url
+                        }, function(err, response, body) {
+                            if (err) {
+                                return nextgame(response);
+                            }
+                            
+                            console.log('search retunred');
 
-				    request({
-				    	method: 'get',
-				    	url: url
-				    }, function(err, response, body) {
-				    	if (err) {
-				    		return nextgame(response);
-				    	}
-				    	
-				    	console.log('search retunred');
+                            body = JSON.parse(body);
+                            
+                            if (body.responseData && body.responseData.results && body.responseData.results[0] && body.responseData.results[0].unescapedUrl) {
 
-				    	body = JSON.parse(body);
-				    	
-				    	if (body.responseData && body.responseData.results && body.responseData.results[0] && body.responseData.results[0].unescapedUrl) {
+                                var imageurl = body.responseData.results[0].unescapedUrl;
+                            } else {
+                                
+                                console.log('likely error in response: ' + body);
+                                return nextgame(console.log(JSON.stringify(response, null, 4));); //an error. maybe google suspected foul play
+                            }
 
-				    		var imageurl = body.responseData.results[0].unescapedUrl;
-				    	} else {
-				    		
-                            console.log('likely error in response: ' + body);
-                            return nextgame(response); //likely an error
-				    	}
+                            console.log('waiting to prevent spamming google.... if you want to stop the application, do so now.');
+                            setTimeout(function() {
+                                
+                                console.log('downloading');
+                                download(imageurl, __dirname + '/../google/' + system + '/original/' + game + '.jpg', function(filename){
+                                    
+                                    console.log('resizing asynconously..');
 
-				    	console.log('waiting to prevent spamming google.... if you want to stop the application, do so now.');
-						setTimeout(function() {
-							
-							console.log('downloading');
-							download(imageurl, __dirname + '/../google/' + system + '/original/' + game + '.jpg', function(filename){
-								
-								console.log('resizing asynconously..');
+                                    for (i = 0; i < widths.length; ++i) {
 
-                                for (i = 0; i < widths.length; ++i) {
+                                        gm(filename).resize(widths[i]).write(__dirname + '/../google/' + system + '/' + widths[i] + '/' + game + '.jpg', function (err) {
+                                            if (err) {
+                                                console.log('resizing error: ' + err)
+                                            }
+                                        });
+                                    }
 
-                                    gm(filename).resize(widths[i]).write(__dirname + '/../google/' + system + '/' + widths[i] + '/' + game + '.jpg', function (err) {
-                                        if (err) {
-                                            console.log('resizing error: ' + err)
-                                        }
-                                    });
-                                }
+                                    console.log('done!');
+                                    nextgame(null);
+                                    
+                                });
+                            }, delay);
+                        });
 
-                                console.log('done!');
-                                nextgame(null);
-								
-							});
-						}, delay);
-				    });
-
+                    });
 
                 }, function(err) {
 				    if (err) {
