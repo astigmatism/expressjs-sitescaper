@@ -103,7 +103,7 @@ router.get('/google', function(req, res, next) {
                             } else {
                                 
                                 console.log('likely error in response: ' + body);
-                                return nextgame(console.log(JSON.stringify(response, null, 4));); //an error. maybe google suspected foul play
+                                return nextgame(console.log(JSON.stringify(response, null, 4))); //an error. maybe google suspected foul play
                             }
 
                             console.log('waiting to prevent spamming google.... if you want to stop the application, do so now.');
