@@ -76,7 +76,7 @@ router.get('/google', function(req, res, next) {
 
                                 //build url
                                 var term = encodeURIComponent(systemnames[system] + ' ' + game + ' box');
-                                var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&start=0&q=' + term;
+                                var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&start=0&q=' + term + '&userip=192.168.1.2';
 
                                 console.log('goog ' + system + ' ' + ctr + ': ' + game + ' --> ' + url);
 
@@ -98,8 +98,7 @@ router.get('/google', function(req, res, next) {
 
                                     } else {
                                         
-                                        console.log('likely error in response: ' + JSON.stringify(body));
-                                        return nextgame(); //skip this game, a restart will find the folder missing and try again
+                                        return nextgame(JSON.stringify(body)); //stop now if google suspects abuse
                                     }
                                     
                                     console.log('create game folder');
