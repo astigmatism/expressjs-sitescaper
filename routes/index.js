@@ -9,12 +9,14 @@ var router = express.Router();
 router.get('/google', function(req, res, next) {
   	
     var delay = req.query.delay || 10000;
+    var userip = req.query.userip || '192.168.1.2';
 
 	var systemnames = {
 		nes: 'nes',
 		snes: 'snes',
 		gen: 'sega genesis',
-		gb: 'gameboy'
+		gb: 'gameboy',
+        gba: 'gba'
 	}
 
     var i;
@@ -76,7 +78,7 @@ router.get('/google', function(req, res, next) {
 
                                 //build url
                                 var term = encodeURIComponent(systemnames[system] + ' ' + game + ' box');
-                                var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&start=0&q=' + term + '&userip=192.168.1.2';
+                                var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&start=0&q=' + term + '&userip=' + userip;
 
                                 console.log('goog ' + system + ' ' + ctr + ': ' + game + ' --> ' + url);
 
