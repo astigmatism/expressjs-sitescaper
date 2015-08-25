@@ -44,7 +44,7 @@ router.get('/google', function(req, res, next) {
                 }
 
                 //read the genreated search.json file
-                fs.readFile(__dirname + '/../data/' + system + '/search.json', 'utf8', function(err, content) {
+                fs.readFile(__dirname + '/../data/' + system + '/searchofficial.json', 'utf8', function(err, content) {
 
                     try {
                         content = JSON.parse(content);
