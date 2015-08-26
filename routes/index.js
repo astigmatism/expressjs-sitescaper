@@ -20,7 +20,8 @@ router.get('/google', function(req, res, next) {
 	}
 
     var i;
-    var resizes = [400, 300, 250, 200, 150, 114, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 5];
+    var resizes_to_delete = [400, 300, 250, 200, 100, 90, 80, 70, 60, 50, 40, 20, 10, 5];
+    var resizes = [114];
 
 	//open the data dir
     fs.readdir(__dirname + '/../data', function(err, systems) {
@@ -71,16 +72,29 @@ router.get('/google', function(req, res, next) {
                         fs.exists(foldertocheck, function (exists) {
                             if (exists) {
 
-                                var filename = __dirname + '/../google/' + system + '/' + game + '/original.jpg';
-                                for (i = 0; i < resizes.length; ++i) {
+                                async.eachSeries(resizes_to_delete, function(size_to_delete, nextsize) {
 
-                                    gm(filename).resize(resizes[i]).write(__dirname + '/../google/' + system + '/' + game + '/' + resizes[i] + '.jpg', function (err) {
-                                        if (err) {
-                                            console.log('resizing error: ' + err)
+                                    var delfile = __dirname + '/../google/' + system + '/' + game + '/' + size_to_delete + '.jpg';
+                                    fs.exists(delfile, function (delexists) {    
+                                        if (delexists) {
+                                            fs.unlinkSync(delfile);
                                         }
+                                        nextsize();
                                     });
-                                }
-                                return nextgame(null);
+
+                                }, function(err) {
+
+                                    var filename = __dirname + '/../google/' + system + '/' + game + '/original.jpg';
+                                    for (i = 0; i < resizes.length; ++i) {
+
+                                        gm(filename).resize(resizes[i]).write(__dirname + '/../google/' + system + '/' + game + '/' + resizes[i] + '.jpg', function (err) {
+                                            if (err) {
+                                                console.log('resizing error: ' + err)
+                                            }
+                                        });
+                                    }
+                                    return nextgame(null);
+                                });
                             }
 
                             console.log('waiting to prevent spamming google.... if you want to stop the application, do so now.');
