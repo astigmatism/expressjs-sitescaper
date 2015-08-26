@@ -106,7 +106,7 @@ router.get('/google', function(req, res, next) {
 
                                     //build url
                                     var term = encodeURIComponent(systemnames[system] + ' ' + game + ' box');
-                                    var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&start=0&q=' + term + '&userip=' + userip;
+                                    var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&as_filetype=jpg&rsz=8&start=0&q=' + term + '&userip=' + userip;
 
                                     console.log('goog ' + system + ' ' + ctr + ': ' + game + ' --> ' + url);
 
