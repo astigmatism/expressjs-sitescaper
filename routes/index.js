@@ -95,63 +95,63 @@ router.get('/google', function(req, res, next) {
                                     }
                                     return nextgame(null);
                                 });
-                            }
+                            } else {
 
-                            console.log('waiting to prevent spamming google.... if you want to stop the application, do so now.');
-                            setTimeout(function() {
+                                console.log('waiting to prevent spamming google.... if you want to stop the application, do so now.');
+                                setTimeout(function() {
 
-                                //build url
-                                var term = encodeURIComponent(systemnames[system] + ' ' + game + ' box');
-                                var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&start=0&q=' + term + '&userip=' + userip;
+                                    //build url
+                                    var term = encodeURIComponent(systemnames[system] + ' ' + game + ' box');
+                                    var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&start=0&q=' + term + '&userip=' + userip;
 
-                                console.log('goog ' + system + ' ' + ctr + ': ' + game + ' --> ' + url);
+                                    console.log('goog ' + system + ' ' + ctr + ': ' + game + ' --> ' + url);
 
-                                request({
-                                    method: 'get',
-                                    url: url
-                                }, function(err, response, body) {
-                                    if (err) {
-                                        return nextgame(response);
-                                    }
-                                    
-                                    console.log('search retunred');
-
-                                    body = JSON.parse(body);
-                                    
-                                    if (body.responseData && body.responseData.results && body.responseData.results[0] && body.responseData.results[0].unescapedUrl) {
-
-                                        var imageurl = body.responseData.results[0].unescapedUrl; //the response must contain a url to the image
-
-                                    } else {
-                                        
-                                        return nextgame(JSON.stringify(body)); //stop now if google suspects abuse
-                                    }
-                                    
-                                    console.log('create game folder');
-                                    fs.mkdirSync(__dirname + '/../google/' + system + '/' + game);
-
-                                    console.log('downloading');
-                                    download(imageurl, __dirname + '/../google/' + system + '/' + game + '/original.jpg', function(filename){
-                                        
-                                        console.log('resizing asynconously..');
-
-                                        for (i = 0; i < resizes.length; ++i) {
-
-                                            gm(filename).resize(resizes[i]).write(__dirname + '/../google/' + system + '/' + game + '/' + resizes[i] + '.jpg', function (err) {
-                                                if (err) {
-                                                    console.log('resizing error: ' + err)
-                                                }
-                                            });
+                                    request({
+                                        method: 'get',
+                                        url: url
+                                    }, function(err, response, body) {
+                                        if (err) {
+                                            return nextgame(response);
                                         }
-
-                                        console.log('done!');
-                                        nextgame();
                                         
+                                        console.log('search retunred');
+
+                                        body = JSON.parse(body);
+                                        
+                                        if (body.responseData && body.responseData.results && body.responseData.results[0] && body.responseData.results[0].unescapedUrl) {
+
+                                            var imageurl = body.responseData.results[0].unescapedUrl; //the response must contain a url to the image
+
+                                        } else {
+                                            
+                                            return nextgame(JSON.stringify(body)); //stop now if google suspects abuse
+                                        }
+                                        
+                                        console.log('create game folder');
+                                        fs.mkdirSync(__dirname + '/../google/' + system + '/' + game);
+
+                                        console.log('downloading');
+                                        download(imageurl, __dirname + '/../google/' + system + '/' + game + '/original.jpg', function(filename){
+                                            
+                                            console.log('resizing asynconously..');
+
+                                            for (i = 0; i < resizes.length; ++i) {
+
+                                                gm(filename).resize(resizes[i]).write(__dirname + '/../google/' + system + '/' + game + '/' + resizes[i] + '.jpg', function (err) {
+                                                    if (err) {
+                                                        console.log('resizing error: ' + err)
+                                                    }
+                                                });
+                                            }
+
+                                            console.log('done!');
+                                            nextgame();
+                                            
+                                        });
                                     });
-                                });
 
-                            }, delay);
-
+                                }, delay);
+                            }
                         });
 
                     }, function(err) {
