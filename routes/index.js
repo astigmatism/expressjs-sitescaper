@@ -4,6 +4,7 @@ var cheerio = require('cheerio');
 var fs = require('fs');
 var async = require('async');
 var gm = require('gm');
+var del = require('del');
 var router = express.Router();
 
 router.get('/google', function(req, res, next) {
@@ -89,7 +90,12 @@ router.get('/google', function(req, res, next) {
 
                                         gm(filename).resize(resizes[i]).write(__dirname + '/../google/' + system + '/' + game + '/' + resizes[i] + '.jpg', function (err) {
                                             if (err) {
-                                                console.log('resizing error: ' + err)
+                                                console.log('resizing error: ' + err);
+                                                del(__dirname + '/../google/' + system + '/' + game, function (err, paths) {
+                                                    console.log('Deleted files/folders:\n', paths.join('\n'));
+                                                });
+                                                fs.unlinkSync(delfile);
+                                                return nextgame(null);
                                             }
                                         });
                                     }
