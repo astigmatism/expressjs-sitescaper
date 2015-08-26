@@ -22,7 +22,7 @@ router.get('/google', function(req, res, next) {
 
     var i;
     var resizes_to_delete = [400, 300, 250, 200, 100, 90, 80, 70, 60, 50, 40, 20, 10, 5];
-    var resizes = [114];
+    var resizes = [150, 114, 30];
 
 	//open the data dir
     fs.readdir(__dirname + '/../data', function(err, systems) {
