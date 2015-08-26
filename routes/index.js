@@ -71,12 +71,16 @@ router.get('/google', function(req, res, next) {
                         fs.exists(foldertocheck, function (exists) {
                             if (exists) {
 
-                                gm(__dirname + '/../google/' + system + '/' + game + '/original.jpg').resize(114).write(__dirname + '/../google/' + system + '/' + game + '/114.jpg', function (err) {
-                                    if (err) {
-                                        console.log('resizing error: ' + err)
-                                    }
-                                    return nextgame(null);
-                                });
+                                var filename = __dirname + '/../google/' + system + '/' + game + '/original.jpg';
+                                for (i = 0; i < resizes.length; ++i) {
+
+                                    gm(filename).resize(resizes[i]).write(__dirname + '/../google/' + system + '/' + game + '/' + resizes[i] + '.jpg', function (err) {
+                                        if (err) {
+                                            console.log('resizing error: ' + err)
+                                        }
+                                    });
+                                }
+                                return nextgame(null);
                             }
 
                             console.log('waiting to prevent spamming google.... if you want to stop the application, do so now.');
