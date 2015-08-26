@@ -93,7 +93,6 @@ router.get('/google', function(req, res, next) {
                                                 console.log('resizing error: ' + err);
                                                 del(__dirname + '/../google/' + system + '/' + game, function (err, paths) {
                                                     console.log('Deleted files/folders:\n', paths.join('\n'));
-                                                    return nextgame(null);
                                                 });
                                             }
                                         });
