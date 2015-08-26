@@ -20,7 +20,7 @@ router.get('/google', function(req, res, next) {
 	}
 
     var i;
-    var resizes = [400, 300, 250, 200, 150, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 5];
+    var resizes = [400, 300, 250, 200, 150, 114, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 5];
 
 	//open the data dir
     fs.readdir(__dirname + '/../data', function(err, systems) {
@@ -70,7 +70,13 @@ router.get('/google', function(req, res, next) {
 
                         fs.exists(foldertocheck, function (exists) {
                             if (exists) {
-                                return nextgame(null);
+
+                                gm(__dirname + '/../google/' + system + '/' + game + '/original.jpg').resize(114).write(__dirname + '/../google/' + system + '/' + game + '/114.jpg', function (err) {
+                                    if (err) {
+                                        console.log('resizing error: ' + err)
+                                    }
+                                    return nextgame(null);
+                                });
                             }
 
                             console.log('waiting to prevent spamming google.... if you want to stop the application, do so now.');
