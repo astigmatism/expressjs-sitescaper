@@ -15,14 +15,14 @@ router.get('/google', function(req, res, next) {
 	var systemnames = {
 		nes: 'nes',
 		snes: 'snes',
-		gen: 'sega genesis',
+		gen: 'genesis',
 		gb: 'gameboy',
         gba: 'gba'
 	}
 
     var i;
-    var resizes_to_delete = [400, 300, 250, 200, 100, 90, 80, 70, 60, 50, 40, 20, 10, 5];
-    var resizes = [150, 114, 30];
+    //var resizes_to_delete = [400, 300, 250, 200, 100, 90, 80, 70, 60, 50, 40, 20, 10, 5];
+    var resizes = [150, 114, 50];
 
 	//open the data dir
     fs.readdir(__dirname + '/../data', function(err, systems) {
@@ -73,39 +73,40 @@ router.get('/google', function(req, res, next) {
                         fs.exists(foldertocheck, function (exists) {
                             if (exists) {
 
-                                async.eachSeries(resizes_to_delete, function(size_to_delete, nextsize) {
+                                // async.eachSeries(resizes_to_delete, function(size_to_delete, nextsize) {
 
-                                    var delfile = __dirname + '/../google/' + system + '/' + game + '/' + size_to_delete + '.jpg';
-                                    fs.exists(delfile, function (delexists) {    
-                                        if (delexists) {
-                                            fs.unlinkSync(delfile);
-                                        }
-                                        nextsize();
-                                    });
+                                //     var delfile = __dirname + '/../google/' + system + '/' + game + '/' + size_to_delete + '.jpg';
+                                //     fs.exists(delfile, function (delexists) {    
+                                //         if (delexists) {
+                                //             fs.unlinkSync(delfile);
+                                //         }
+                                //         nextsize();
+                                //     });
 
-                                }, function(err) {
+                                // }, function(err) {
 
-                                    var filename = __dirname + '/../google/' + system + '/' + game + '/original.jpg';
-                                    for (i = 0; i < resizes.length; ++i) {
+                                //     var filename = __dirname + '/../google/' + system + '/' + game + '/original.jpg';
+                                //     for (i = 0; i < resizes.length; ++i) {
 
-                                        gm(filename).resize(resizes[i]).write(__dirname + '/../google/' + system + '/' + game + '/' + resizes[i] + '.jpg', function (err) {
-                                            if (err) {
-                                                console.log('resizing error: ' + err);
-                                                del(__dirname + '/../google/' + system + '/' + game, function (err, paths) {
-                                                    console.log('Deleted files/folders:\n', paths.join('\n'));
-                                                });
-                                            }
-                                        });
-                                    }
-                                    return nextgame(null);
-                                });
+                                //         gm(filename).resize(resizes[i]).write(__dirname + '/../google/' + system + '/' + game + '/' + resizes[i] + '.jpg', function (err) {
+                                //             if (err) {
+                                //                 console.log('resizing error: ' + err);
+                                //                 del(__dirname + '/../google/' + system + '/' + game, function (err, paths) {
+                                //                     console.log('Deleted files/folders:\n', paths.join('\n'));
+                                //                 });
+                                //             }
+                                //         });
+                                //     }
+                                //     return nextgame(null);
+                                // });
+                                return nextgame(null);
                             } else {
 
                                 console.log('waiting to prevent spamming google.... if you want to stop the application, do so now.');
                                 setTimeout(function() {
 
                                     //build url
-                                    var term = encodeURIComponent(systemnames[system] + ' ' + game + ' box');
+                                    var term = encodeURIComponent(systemnames[system] + ' ' + game + ' box front');
                                     var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&as_filetype=jpg&rsz=8&start=0&q=' + term + '&userip=' + userip;
 
                                     console.log('goog ' + system + ' ' + ctr + ': ' + game + ' --> ' + url);
