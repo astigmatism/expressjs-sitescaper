@@ -48,7 +48,7 @@ router.get('/google', function(req, res, next) {
                 }
 
                 //read the genreated search.json file
-                fs.readFile(__dirname + '/../data/' + system + '/searchofficial.json', 'utf8', function(err, content) {
+                fs.readFile(__dirname + '/../data/' + system + '/search.json', 'utf8', function(err, content) {
 
                     try {
                         content = JSON.parse(content);
@@ -58,7 +58,7 @@ router.get('/google', function(req, res, next) {
 
                     var games = [];
                     for (game in content) {
-                    	if (content[game].r >= 88) {
+                    	if (content[game].r >= 87) {
                     		games.push(game);
                     	}
                     }
