@@ -1,7 +1,7 @@
 exports.data = {
 	systems: {
 		gb: {
-			name: "Nintendo Game Boy",
+			name: "Gameboy",
 			shortname: "gameboy",
 			romfileextentions: [
 				'gb',
@@ -9,21 +9,21 @@ exports.data = {
 			]
 		},
 		gba: {
-			name: "Nintendo Game Boy Advance",
+			name: "Gameboy Advance",
 			shortname: "GBA",
 			romfileextentions: [
 				'gba'
 			]
 		},
 		nes: {
-			name: "Nintendo Entertainment System (NES)",
+			name: "Nintendo Entermainment System",
 			shortname: "NES",
 			romfileextentions: [
 				'nes'
 			]
 		},
 		snes: {
-			name: "Super Nintendo (SNES)",
+			name: "Super Nintendo Entermainment System",
 			shortname: "SNES",
 			romfileextentions: [
 				'smc'
@@ -36,6 +36,16 @@ exports.data = {
 				'bin',
 				'32x'
 			]
+		},
+		sms: {
+			name: "Sega Master System",
+			shortname: "Master System",
+			romfileextentions: []
+		},
+		lynx: {
+			name: "Atari Lynx",
+			shortname: "Lynx",
+			romfileextentions: []
 		}
 	}
 };
