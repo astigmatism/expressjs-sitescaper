@@ -19,7 +19,8 @@ router.get('/google', function(req, res, next) {
 		snes: 'snes',
 		gen: 'genesis',
 		gb: 'gameboy',
-        gba: 'gba'
+        gba: 'gba',
+        sms: 'master system'
 	}
 
     var i;
