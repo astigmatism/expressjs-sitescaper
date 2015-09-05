@@ -47,5 +47,10 @@ exports.data = {
 			shortname: "Lynx",
 			romfileextentions: []
 		}
+	},
+	search: {
+		boxFrontThreshold: 83,
+		searchAllThreshold: 86,
+		suggestionThreshold: 86
 	}
 };

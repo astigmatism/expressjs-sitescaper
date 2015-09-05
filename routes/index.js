@@ -61,7 +61,7 @@ router.get('/google', function(req, res, next) {
 
                     var games = [];
                     for (game in content) {
-                    	if (content[game].r >= 87) {
+                    	if (content[game].r >= config.data.search.boxFrontThreshold) {
                     		games.push(game);
                     	}
                     }
