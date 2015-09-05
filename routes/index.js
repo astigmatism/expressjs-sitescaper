@@ -14,15 +14,6 @@ router.get('/google', function(req, res, next) {
     var delay = req.query.delay || 10000;
     var userip = req.query.userip || '192.168.1.2';
 
-	var systemnames = {
-		nes: 'nes',
-		snes: 'snes',
-		gen: 'genesis',
-		gb: 'gameboy',
-        gba: 'gba',
-        sms: 'master system'
-	}
-
     var i;
     //var resizes_to_delete = [400, 300, 250, 200, 100, 90, 80, 70, 60, 50, 40, 20, 10, 5];
     var resizes = [150, 114, 50];
@@ -109,7 +100,7 @@ router.get('/google', function(req, res, next) {
                                 setTimeout(function() {
 
                                     //build url
-                                    var term = encodeURIComponent(systemnames[system] + ' ' + game + ' box front');
+                                    var term = encodeURIComponent(config.data.system.shortname + ' ' + game + ' box front');
                                     var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&as_filetype=jpg&rsz=8&start=0&q=' + term + '&userip=' + userip;
 
                                     console.log('goog ' + system + ' ' + ctr + ': ' + game + ' --> ' + url);
@@ -186,14 +177,6 @@ router.get('/thegamesdb', function(req, res, next) {
 
     var delay = req.query.delay || 10000;
     var userip = req.query.userip || '192.168.1.2';
-
-    var systemnames = {
-        nes: 'nes',
-        snes: 'snes',
-        gen: 'genesis',
-        gb: 'gameboy',
-        gba: 'gba'
-    }
 
     var i;
 
@@ -336,13 +319,6 @@ router.get('/thegamesdb', function(req, res, next) {
 });
 
 router.get('/bing', function(req, res, next) {
-  	
-	var systemnames = {
-		nes: 'nes',
-		snes: 'snes',
-		gen: 'sega genesis',
-		gb: 'gameboy'
-	};
 
 	//open the data dir
     fs.readdir(__dirname + '/../data', function(err, systems) {
@@ -400,7 +376,7 @@ router.get('/bing', function(req, res, next) {
                     }
 
                 	//build url
-                	var term = encodeURIComponent(systemnames[system] + ' ' + game + ' box');
+                	var term = encodeURIComponent(config.data.system.shortname + ' ' + game + ' box');
 				    var url = 'https://api.datamarket.azure.com/Bing/Search/v1/Image?Query=%27' + term + '%27&$format=json';
 
 				    console.log('bing ' + ctr + ': ' + game + ' --> ' + url);
