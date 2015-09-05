@@ -100,7 +100,7 @@ router.get('/google', function(req, res, next) {
                                 setTimeout(function() {
 
                                     //build url
-                                    var term = encodeURIComponent(config.data.system.shortname + ' ' + game + ' box front');
+                                    var term = encodeURIComponent(config.data.systems[system].shortname + ' ' + game + ' box front');
                                     var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&as_filetype=jpg&rsz=8&start=0&q=' + term + '&userip=' + userip;
 
                                     console.log('goog ' + system + ' ' + ctr + ': ' + game + ' --> ' + url);
@@ -376,7 +376,7 @@ router.get('/bing', function(req, res, next) {
                     }
 
                 	//build url
-                	var term = encodeURIComponent(config.data.system.shortname + ' ' + game + ' box');
+                	var term = encodeURIComponent(config.data.systems[system].shortname + ' ' + game + ' box');
 				    var url = 'https://api.datamarket.azure.com/Bing/Search/v1/Image?Query=%27' + term + '%27&$format=json';
 
 				    console.log('bing ' + ctr + ': ' + game + ' --> ' + url);
