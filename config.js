@@ -40,17 +40,21 @@ exports.data = {
 		sms: {
 			name: "Sega Master System",
 			shortname: "Master System",
-			romfileextentions: []
+			romfileextentions: [
+				'sms'
+			]
 		},
-		lynx: {
-			name: "Atari Lynx",
-			shortname: "Lynx",
-			romfileextentions: []
+		gg: {
+			name: "Sega Game Gear",
+			shortname: "Game Gear",
+			romfileextentions: [
+				'gg'
+			]
 		}
 	},
 	search: {
-		boxFrontThreshold: 83,
-		searchAllThreshold: 86,
-		suggestionThreshold: 86
+		boxFrontThreshold: 81,
+		searchAllThreshold: 84,
+		suggestionThreshold: 84
 	}
 };
