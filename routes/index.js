@@ -129,6 +129,9 @@ router.get('/google', function(req, res, next) {
                                             });
 
                                         }, delay);
+                                    } else {
+                                        //the game exists in either or both the google or google_new location
+                                        nextgame();
                                     }
                                 });
                             });
