@@ -89,7 +89,9 @@ router.get('/google', function(req, res, next) {
                                                 url: url
                                             }, function(err, response, body) {
                                                 if (err) {
-                                                    return nextgame(response);
+
+                                                    console.log('no search results returned for: ' + game + '. skipping.');
+                                                    return nextgame();
                                                 }
                                                 
                                                 console.log('search retunred');
