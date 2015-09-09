@@ -127,16 +127,16 @@ router.get('/google', function(req, res, next) {
                                         }
                                         
                                         console.log('create game folder');
-                                        fs.mkdirSync(__dirname + '/../google/' + system + '/' + game);
+                                        fs.mkdirSync(__dirname + '/../google_new/' + system + '/' + game);
 
                                         console.log('downloading');
-                                        download(imageurl, __dirname + '/../google/' + system + '/' + game + '/original.jpg', function(filename){
+                                        download(imageurl, __dirname + '/../google_new/' + system + '/' + game + '/original.jpg', function(filename){
                                             
                                             console.log('resizing asynconously..');
 
                                             for (i = 0; i < resizes.length; ++i) {
 
-                                                gm(filename).resize(resizes[i]).write(__dirname + '/../google/' + system + '/' + game + '/' + resizes[i] + '.jpg', function (err) {
+                                                gm(filename).resize(resizes[i]).write(__dirname + '/../google_new/' + system + '/' + game + '/' + resizes[i] + '.jpg', function (err) {
                                                     if (err) {
                                                         console.log('resizing error: ' + err)
                                                     }
