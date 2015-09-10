@@ -82,7 +82,7 @@ router.get('/google', function(req, res, next) {
                                             var term = encodeURIComponent(config.data.systems[system].shortname + ' ' + game + ' box front');
                                             var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&as_filetype=jpg&rsz=8&start=0&q=' + term + '&userip=' + userip;
 
-                                            console.log('goog ' + system + ' ' + ctr + ': ' + game + ' --> ' + url);
+                                            console.log('searching: system' + system + ', count: ' + ctr + ', rank: ' + content[game].r + ', game: ' + game);
 
                                             request({
                                                 method: 'get',
