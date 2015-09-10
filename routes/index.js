@@ -89,21 +89,25 @@ router.get('/google', function(req, res, next) {
                                                 url: url
                                             }, function(err, response, body) {
                                                 if (err) {
-
-                                                    console.log('no search results returned for: ' + game + '. skipping.');
-                                                    return nextgame();
+                                                    return nextgame(err);
                                                 }
                                                 
                                                 console.log('search retunred');
 
                                                 body = JSON.parse(body);
                                                 
-                                                if (body.responseData && body.responseData.results && body.responseData.results[0] && body.responseData.results[0].unescapedUrl) {
+                                                if (body.responseData && body.responseData.results) {
 
-                                                    var imageurl = body.responseData.results[0].unescapedUrl; //the response must contain a url to the image
+                                                    if (body.responseData.results[0] && body.responseData.results[0].unescapedUrl) {
+
+                                                        var imageurl = body.responseData.results[0].unescapedUrl; //the response must contain a url to the image
+                                                    }
+                                                    else {
+                                                        console.log('search for ' + game + ' returned no results');
+                                                    }
 
                                                 } else {
-                                                    
+
                                                     return nextgame(JSON.stringify(body)); //stop now if google suspects abuse
                                                 }
                                                 
