@@ -104,6 +104,7 @@ router.get('/google', function(req, res, next) {
                                                     }
                                                     else {
                                                         console.log('search for ' + game + ' returned no results');
+                                                        return nextgame();
                                                     }
 
                                                 } else {
