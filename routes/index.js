@@ -75,14 +75,14 @@ router.get('/google', function(req, res, next) {
                                 fs.exists(foldertochecknew, function (existsnew) {
                                     if (!exists && !existsnew) {
 
+                                        console.log('on deck --> system: ' + system + ', count: ' + ctr + ', rank: ' + content[game].r + ', game: ' + game);
                                         console.log('waiting to prevent spamming google.... if you want to stop the application, do so now.');
+
                                         setTimeout(function() {
 
                                             //build url
                                             var term = encodeURIComponent(config.data.systems[system].shortname + ' ' + game + ' box front');
                                             var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&as_filetype=jpg&rsz=8&start=0&q=' + term + '&userip=' + userip;
-
-                                            console.log('searching: system' + system + ', count: ' + ctr + ', rank: ' + content[game].r + ', game: ' + game);
 
                                             request({
                                                 method: 'get',
